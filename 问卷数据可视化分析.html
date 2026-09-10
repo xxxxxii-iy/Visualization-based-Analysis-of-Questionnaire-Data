@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>问卷数据可视化分析 · 网络言论/信息过滤/算法推荐与青年价值观（N=138）</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --bg:#f3f5f9; --surface:#ffffff; --border:#e3e8f0; --text:#1f2937; --text2:#5b6b81;
+    --blue:#2563eb; --orange:#f97316; --purple:#7c3aed; --green:#059669; --red:#dc2626;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;line-height:1.6;padding:28px 20px;}
+  .wrap{max-width:1240px;margin:0 auto;}
+  header{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 60%,#3b82f6 100%);border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:22px;}
+  header h1{font-size:24px;font-weight:700;margin-bottom:6px;}
+  header .sub{font-size:13px;opacity:.92;}
+  header .src{display:inline-block;margin-top:10px;font-size:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);padding:3px 10px;border-radius:999px;}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .kpi .num{font-size:26px;font-weight:800;color:var(--blue);}
+  .kpi .num small{font-size:14px;font-weight:600;color:var(--text2);}
+  .kpi .lbl{font-size:12.5px;color:var(--text2);margin-top:2px;}
+  .sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:22px;}
+  .sec h2{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .sec h2 .tag{font-size:11px;font-weight:600;background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:999px;}
+  .sec .desc{font-size:12.5px;color:var(--text2);margin-bottom:14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .chart{width:100%;}
+  .legend-note{font-size:12px;color:var(--text2);margin-top:6px;}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .insight{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:10px;padding:14px 16px;}
+  .insight h4{font-size:14px;margin-bottom:4px;color:#1e3a8a;}
+  .insight p{font-size:13px;color:var(--text2);}
+  .insight.warn{border-left-color:var(--orange);}
+  .insight.warn h4{color:#9a3412;}
+  .qblock{margin-bottom:10px;}
+  .qblock .qtitle{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
+  .qblock .qtitle em{font-style:normal;font-weight:400;color:var(--text2);font-size:11.5px;margin-left:6px;}
+  .hl{color:var(--blue);font-weight:700;}
+  .hl2{color:var(--orange);font-weight:700;}
+  footer{margin-top:26px;text-align:center;color:var(--text2);font-size:12px;line-height:1.8;}
+  @media(max-width:900px){.kpis{grid-template-columns:1fr 1fr;}.grid2,.grid3,.cards{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>算法推荐 × 青年价值观 问卷数据可视化分析</h1>
+  <div class="sub">《网络言论、信息过滤与算法推荐对青年价值观的影响调查问卷》· 有效样本 138 份</div>
+  <span class="src">数据源：C:\Users\20251\Desktop\1.xlsx · Sheet1 · 单选题 n=138（1 份空答题计为缺失） · 四维评分口径见文末</span>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><div class="num">138<small> 份</small></div><div class="lbl">有效问卷</div></div>
+  <div class="kpi"><div class="num">64.5<small>%</small></div><div class="lbl">女性受访者</div></div>
+  <div class="kpi"><div class="num">65.9<small>%</small></div><div class="lbl">19–22 岁青年</div></div>
+  <div class="kpi"><div class="num">91.3<small>%</small></div><div class="lbl">日常使用短视频</div></div>
+</div>
+
+<!-- 1 样本画像 -->
+<div class="sec">
+  <h2>样本画像 <span class="tag">Q1–Q4</span></h2>
+  <div class="desc">受访者以 19–22 岁本科在读女生为主，日均上网 4 小时以上占 76.1%，重度网民特征明显。</div>
+  <div class="grid2">
+    <div id="c_gender" class="chart" style="height:250px;"></div>
+    <div id="c_age" class="chart" style="height:250px;"></div>
+    <div id="c_identity" class="chart" style="height:250px;"></div>
+    <div id="c_online" class="chart" style="height:250px;"></div>
+  </div>
+</div>
+
+<!-- 2 平台 -->
+<div class="sec">
+  <h2>常用网络平台 <span class="tag">Q5 多选</span></h2>
+  <div class="desc">短视频平台几乎全覆盖（91.3%）；社交论坛与购物平台并列第二（46.4%）；资讯新闻 APP 仅 21.7%，属于小众信源。</div>
+  <div id="c_platform" style="height:300px;"></div>
+</div>
+
+<!-- 3 四维画像 -->
+<div class="sec">
+  <h2>四维画像对比 <span class="tag">评分制</span></h2>
+  <div class="desc">全体均值 vs 受访者 R10（序号 9）vs 本人画像（来自上一轮代填画像，非本表数据）。评分方向：越高 = 越主动 / 越批判 / 越承认算法影响 / 越主动干预。</div>
+  <div class="grid2">
+    <div id="c_radar" style="height:400px;"></div>
+    <div id="c_dimbar" style="height:400px;"></div>
+  </div>
+  <div class="legend-note">
+    <span class="dot" style="background:#2563eb;"></span>全体均值（n=138）&nbsp;&nbsp;
+    <span class="dot" style="background:#f97316;"></span>R10 受访者&nbsp;&nbsp;
+    <span class="dot" style="background:#7c3aed;"></span>你本人画像
+  </div>
+</div>
+
+<!-- 4 分维度 -->
+<div class="sec">
+  <h2>四维度逐题分布 <span class="tag">Q6–Q24</span></h2>
+  <div class="desc">按面板口径归入四个维度；横向条形按选项人数排序，鼠标悬停可见百分比。</div>
+  <h3 style="font-size:14px;color:#1e3a8a;margin:12px 0 8px;">① 算法感知（Q6–Q9）</h3>
+  <div class="grid2">
+    <div id="c_q6" class="chart" style="height:230px;"></div>
+    <div id="c_q7" class="chart" style="height:230px;"></div>
+    <div id="c_q8" class="chart" style="height:230px;"></div>
+    <div id="c_q9" class="chart" style="height:230px;"></div>
+  </div>
+  <h3 style="font-size:14px;color:#1e3a8a;margin:20px 0 8px;">② 认知与判断（Q10–Q12、Q14）</h3>
+  <div class="grid2">
+    <div id="c_q10" class="chart" style="height:230px;"></div>
+    <div id="c_q11" class="chart" style="height:230px;"></div>
+    <div id="c_q12" class="chart" style="height:230px;"></div>
+    <div id="c_q14" class="chart" style="height:230px;"></div>
+  </div>
+  <h3 style="font-size:14px;color:#1e3a8a;margin:20px 0 8px;">③ 价值观影响（Q15–Q22）</h3>
+  <div class="grid2">
+    <div id="c_q15" class="chart" style="height:230px;"></div>
+    <div id="c_q16" class="chart" style="height:230px;"></div>
+    <div id="c_q17" class="chart" style="height:230px;"></div>
+    <div id="c_q18" class="chart" style="height:230px;"></div>
+    <div id="c_q19" class="chart" style="height:230px;"></div>
+    <div id="c_q20" class="chart" style="height:230px;"></div>
+    <div id="c_q21" class="chart" style="height:230px;"></div>
+    <div id="c_q22" class="chart" style="height:230px;"></div>
+  </div>
+</div>
+
+<!-- 5 多选拆分 -->
+<div class="sec">
+  <h2>多选重点题拆分 <span class="tag">Q13 / Q23 / Q24</span></h2>
+  <div class="desc">热点判断来源三足鼎立（算法首页 / 网友评论 / 官方媒体均超 60%）；行动干预上「减少刷时长」与「拉黑屏蔽」最多，仅 16.7% 选择不做任何干预。</div>
+  <div class="grid3">
+    <div id="c_q13" class="chart" style="height:300px;"></div>
+    <div id="c_q23" class="chart" style="height:300px;"></div>
+    <div id="c_q24" class="chart" style="height:300px;"></div>
+  </div>
+  <div class="legend-note">注：多选按「选项被选次数」计数，分母为 138，故各项百分比之和可超过 100%。</div>
+</div>
+
+<!-- 6 结论 -->
+<div class="sec">
+  <h2>核心发现</h2>
+  <div class="cards">
+    <div class="insight"><h4>算法感知普遍敏锐，但行动明显滞后</h4><p>57.2% 认为推荐「非常明显」贴合习惯，53.6% 表示「总是」遇到同立场推送；但信息茧房「非常清楚且刻意打破」仅 27.5%，认知与行动之间存在显著落差。</p></div>
+    <div class="insight warn"><h4>反方观点处理是最薄弱环节</h4><p>面对相反立场，45.7%「内心反感、简单浏览」，15.2% 直接划走，能耐心阅读反思的只有 36.2%——这是青年认知开放度最需要提升的一环。</p></div>
+    <div class="insight"><h4>信源依赖偏被动，多方查证不足</h4><p>热点判断来源中，算法首页(61.6%)、网友评论(62.3%)与官方媒体(65.2%)接近，主动「查阅多方资料独立判断」仅 39.1%，被动接收仍占主流。</p></div>
+    <div class="insight warn"><h4>整体评价偏负面，但未失控</h4><p>39.9% 认为算法「负面影响略大于正面」，仅 8.7% 认为以负面为主；29.7% 认为正面为主或略大——多数人持审慎的中间态度。</p></div>
+    <div class="insight"><h4>行动干预意愿较高，方向集中在「减量」</h4><p>Q23 中减少刷时长(53.6%)与拉黑屏蔽(49.3%)领先，「主动搜索不同立场」仅 27.5%；Q24 中 68.8% 呼吁增加不同立场推送、55.1% 要求自主开关权限。</p></div>
+    <div class="insight warn"><h4>R10 画像：行动开放度远低于均值</h4><p>R10 行动开放仅 1.50（全体 2.07、本人 3.50），四维均低于本人画像；其「反方观点内心反感」「未核实消息直接判谣」体现出更刚性的认知防御。</p></div>
+  </div>
+</div>
+
+<footer>
+  数据源：C:\Users\20251\Desktop\1.xlsx（Sheet1，138 条有效作答）｜四维口径：算法感知=Q6+Q7+Q8+Q9 均分；认知态度=Q10+Q11+Q12+Q14 均分；价值观影响=Q15+Q16+Q17+Q19+Q20+Q21 均分；行动开放=(Q23 选项数+Q24 选项数)/2<br>
+  每题 0–4 分，越高 = 越主动 / 越批判 / 越承认算法影响 / 越主动干预。R10 与本人画像为个体得分，用于与全体均值对照。
+</footer>
+</div>
+
+<script>
+var N = 138;
+var BLUE='#2563eb', ORANGE='#f97316', PURPLE='#7c3aed', GRAY='#94a3b8', GREEN='#059669';
+
+function baseBar(id, title, data, color){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var chart = echarts.init(el);
+  var opt = {
+    title:{text:title,left:0,top:0,textStyle:{fontSize:13,fontWeight:600,color:'#1f2937'}},
+    tooltip:{trigger:'item',triggerOn:'click',renderMode:'richText',confine:true,
+      formatter:function(p){return p.name+'<br/>'+p.value+' 人（'+(p.value/N*100).toFixed(1)+'%）';}},
+    grid:{left:8,right:40,top:26,bottom:8,containLabel:true},
+    xAxis:{type:'value',show:false},
+    yAxis:{type:'category',inverse:true,data:data.map(function(d){return d[0];}),
+      axisLabel:{fontSize:11,color:'#4b5563',width:150,overflow:'break'}},
+    series:[{type:'bar',data:data.map(function(d){return d[1];}),barWidth:12,
+      itemStyle:{color:color,borderRadius:[0,4,4,0]},
+      label:{show:true,position:'right',fontSize:10.5,color:'#6b7280',
+        formatter:function(p){return p.value;}}}]};
+  chart.setOption(opt);
+  window.addEventListener('resize', function(){chart.resize();});
+}
+
+function baseDonut(id, title, data, colors){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var chart = echarts.init(el);
+  var opt = {
+    title:{text:title,left:0,top:0,textStyle:{fontSize:13,fontWeight:600,color:'#1f2937'}},
+    tooltip:{trigger:'item',triggerOn:'click',renderMode:'richText',confine:true,
+      formatter:function(p){return p.name+'<br/>'+p.value+' 人（'+(p.value/N*100).toFixed(1)+'%）';}},
+    legend:{bottom:0,type:'scroll',textStyle:{fontSize:10.5,color:'#4b5563'},itemWidth:10,itemHeight:10},
+    series:[{type:'pie',radius:['42%','68%'],center:['50%','46%'],
+      label:{show:false},labelLine:{show:false},
+      data:data.map(function(d,i){return {name:d[0],value:d[1],itemStyle:{color:colors[i%colors.length]}};})}]};
+  chart.setOption(opt);
+  window.addEventListener('resize', function(){chart.resize();});
+}
+
+/* ---- KPI 图 ---- */
+baseDonut('c_gender','Q1 性别',[['女',89],['男',47],['不愿透露',1],['空',1]],['#3b82f6','#f59e0b','#cbd5e1','#e5e7eb']);
+baseDonut('c_age','Q2 年龄段',[['19–22 岁',91],['27 岁及以上',37],['23–26 岁',6],['16–18 岁',3],['空',1]],['#2563eb','#f97316','#7c3aed','#059669','#e5e7eb']);
+baseDonut('c_identity','Q3 身份',[['本科大三',60],['其他',37],['本科大二',28],['研究生',7],['本科大四',3],['本科大一',2],['空',1]],['#2563eb','#94a3b8','#3b82f6','#7c3aed','#f59e0b','#059669','#e5e7eb']);
+baseDonut('c_online','Q4 日均上网',[['6–8 小时',41],['8 小时以上',32],['4–6 小时',32],['2–4 小时',26],['2 小时以内',6],['空',1]],['#2563eb','#f97316','#3b82f6','#f59e0b','#94a3b8','#e5e7eb']);
+
+/* ---- 平台 ---- */
+(function(){
+  var chart = echarts.init(document.getElementById('c_platform'));
+  chart.setOption({
+    tooltip:{trigger:'axis',triggerOn:'click',renderMode:'richText',confine:true,
+      formatter:function(ps){var p=ps[0];return p.name+'<br/>'+p.value+' 人（'+(p.value/N*100).toFixed(1)+'%）';}},
+    grid:{left:8,right:46,top:12,bottom:8,containLabel:true},
+    xAxis:{type:'value',axisLabel:{fontSize:11,color:'#6b7280'}},
+    yAxis:{type:'category',inverse:true,data:['短视频平台','社交论坛','购物平台','游戏平台','资讯新闻 APP','其他'],
+      axisLabel:{fontSize:11.5,color:'#374151'}},
+    series:[{type:'bar',barWidth:16,
+      data:[
+        {value:126,itemStyle:{color:BLUE}},
+        {value:64,itemStyle:{color:'#60a5fa'}},
+        {value:64,itemStyle:{color:'#60a5fa'}},
+        {value:43,itemStyle:{color:'#93c5fd'}},
+        {value:30,itemStyle:{color:'#bfdbfe'}},
+        {value:5,itemStyle:{color:'#dbeafe'}}
+      ],
+      label:{show:true,position:'right',fontSize:11,color:'#4b5563',formatter:function(p){return p.value;}}}]});
+  window.addEventListener('resize', function(){chart.resize();});
+})();
+
+/* ---- 雷达 ---- */
+(function(){
+  var chart = echarts.init(document.getElementById('c_radar'));
+  chart.setOption({
+    tooltip:{trigger:'item',triggerOn:'click',renderMode:'richText',confine:true},
+    legend:{bottom:0,textStyle:{fontSize:11,color:'#4b5563'},itemWidth:12,itemHeight:8},
+    radar:{indicator:[
+        {name:'算法感知',max:4},{name:'认知态度',max:4},{name:'价值观影响',max:4},{name:'行动开放',max:4}],
+      radius:'62%',center:['50%','48%'],
+      axisName:{color:'#374151',fontSize:12},
+      splitArea:{areaStyle:{color:['rgba(37,99,235,0.02)','rgba(37,99,235,0.05)']}},
+      splitLine:{lineStyle:{color:'#dbe3ee'}},axisLine:{lineStyle:{color:'#dbe3ee'}}},
+    series:[{type:'radar',symbolSize:4,
+      data:[
+        {value:[3.15,2.72,2.61,2.07],name:'全体均值',lineStyle:{color:BLUE,width:2},itemStyle:{color:BLUE},areaStyle:{color:'rgba(37,99,235,0.15)'}},
+        {value:[3.00,3.25,3.00,1.50],name:'R10 受访者',lineStyle:{color:ORANGE,width:2},itemStyle:{color:ORANGE},areaStyle:{color:'rgba(249,115,22,0.12)'}},
+        {value:[3.75,3.75,3.67,3.50],name:'你本人画像',lineStyle:{color:PURPLE,width:2,type:'dashed'},itemStyle:{color:PURPLE},areaStyle:{color:'rgba(124,58,237,0.10)'}}
+      ]}]});
+  window.addEventListener('resize', function(){chart.resize();});
+})();
+
+/* ---- 四维柱状 ---- */
+(function(){
+  var chart = echarts.init(document.getElementById('c_dimbar'));
+  chart.setOption({
+    tooltip:{trigger:'axis',triggerOn:'click',renderMode:'richText',confine:true,valueFormatter:function(v){return v.toFixed(2);}},
+    legend:{bottom:0,textStyle:{fontSize:11,color:'#4b5563'},itemWidth:12,itemHeight:8},
+    grid:{left:8,right:16,top:10,bottom:40,containLabel:true},
+    xAxis:{type:'category',data:['算法感知','认知态度','价值观影响','行动开放'],
+      axisLabel:{fontSize:12,color:'#374151'},axisLine:{lineStyle:{color:'#cbd5e1'}}},
+    yAxis:{type:'value',min:0,max:4,axisLabel:{fontSize:11,color:'#6b7280'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+    series:[
+      {name:'全体均值',type:'bar',data:[3.15,2.72,2.61,2.07],barWidth:18,itemStyle:{color:BLUE,borderRadius:[4,4,0,0]},
+        label:{show:true,position:'top',fontSize:11,color:BLUE,formatter:function(p){return p.value.toFixed(2);}}},
+      {name:'R10',type:'bar',data:[3.00,3.25,3.00,1.50],barWidth:18,itemStyle:{color:ORANGE,borderRadius:[4,4,0,0]},
+        label:{show:true,position:'top',fontSize:11,color:ORANGE,formatter:function(p){return p.value.toFixed(2);}}},
+      {name:'你本人',type:'bar',data:[3.75,3.75,3.67,3.50],barWidth:18,itemStyle:{color:PURPLE,borderRadius:[4,4,0,0]},
+        label:{show:true,position:'top',fontSize:11,color:PURPLE,formatter:function(p){return p.value.toFixed(2);}}}
+    ]});
+  window.addEventListener('resize', function(){chart.resize();});
+})();
+
+/* ---- 分维度单选题 ---- */
+baseBar('c_q6','Q6 感知算法个性化推荐',[['非常明显',79],['有一定感觉',52],['偶尔察觉',5],['几乎感受不到',1]],BLUE);
+baseBar('c_q7','Q7 同类立场越推越多',[['总是',74],['经常',54],['偶尔',7],['很少',1],['从不',1]],BLUE);
+baseBar('c_q8','Q8 过滤/限流/删除',[['经常看到',59],['偶尔遇到',51],['很少留意',24],['从未发现',3]],BLUE);
+baseBar('c_q9','Q9 偏激言论频率',[['偶尔看到',54],['经常出现',43],['频繁',19],['很少遇见',19],['几乎没有',2]],BLUE);
+baseBar('c_q10','Q10 观点一致时',[['短暂认同保持怀疑',72],['更加坚信',27],['主动搜索对立',23],['直接忽略',15]],BLUE);
+baseBar('c_q11','Q11 观点相反时',[['内心反感简单浏览',63],['耐心阅读反思',50],['直接划走',21],['主动反驳',3]],ORANGE);
+baseBar('c_q12','Q12 信息茧房意识',[['有所了解但少规避',84],['非常清楚刻意打破',38],['听说过没在意',12],['完全不了解',3]],BLUE);
+baseBar('c_q14','Q14 同质化改变判断',[['会产生一定动摇',66],['轻微影响',46],['很大程度被改变',14],['几乎不受影响',10],['完全不会',1]],BLUE);
+baseBar('c_q15','Q15 极端对立言论时',[['理性区分',65],['部分变偏激',38],['放大负面消极',27],['不受影响',7]],BLUE);
+baseBar('c_q16','Q16 长期投喂后包容度',[['略有排斥异见',54],['更懂换位思考',52],['没有变化',16],['更难接纳不同意见',15]],ORANGE);
+baseBar('c_q17','Q17 未核实消息处理',[['半信半疑不转发',80],['主动求证真伪',33],['容易相信甚至转发',12],['直接判定谣言',12]],BLUE);
+baseBar('c_q18','Q18 平台过滤帮助',[['作用一般利弊兼有',53],['有一定正向帮助',52],['帮助很大',18],['有负面影响',11],['完全没有作用',3]],BLUE);
+baseBar('c_q19','Q19 流量化价值追求影响',[['存在一定影响',59],['轻微影响',34],['基本不受影响',30],['影响很大',10],['完全无影响',4]],BLUE);
+baseBar('c_q20','Q20 公共议题关注度',[['有所降低',71],['没有变化',35],['明显降低',18],['反而更多关注',13]],ORANGE);
+baseBar('c_q21','Q21 价值立场摇摆度',[['能守住自身立场',67],['偶尔立场混乱',49],['完全不受干扰',12],['经常摇摆',9]],BLUE);
+baseBar('c_q22','Q22 整体影响偏向',[['负面略大于正面',55],['正负差不多',29],['正面略大于负面',21],['以正面为主',20],['以负面为主',12]],ORANGE);
+
+/* ---- 多选拆分 ---- */
+baseBar('c_q13','Q13 热点判断来源',[['官方媒体报道',90],['网友评论/热门言论',86],['算法首页推送',85],['自己查阅多方资料',54],['身边人观点',32]],BLUE);
+baseBar('c_q23','Q23 削弱算法局限行动',[['减少刷推荐时长',74],['拉黑屏蔽偏激账号',68],['刻意搜索不同立场',38],['关闭个性化推荐',37],['不做任何干预',23]],GREEN);
+baseBar('c_q24','Q24 平台优化建议',[['增加不同立场推送',95],['增加主流正向权重',86],['用户自主开关权限',76],['加大偏激网暴过滤',60],['维持现状',9]],GREEN);
+</script>
+</body>
+</html>
